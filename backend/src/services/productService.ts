@@ -1,6 +1,6 @@
 import { syncQueue } from "../queue";
 
-export const addProduct = async (productData) => {
+export const addProduct = async (productData: any) => {
   // simpan ke MySQL via TypeORM
   // ...
   
