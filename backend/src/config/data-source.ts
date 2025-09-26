@@ -4,6 +4,9 @@ import { User } from "../entities/User";
 import { Product } from "../entities/Product";
 import { Transaction } from "../entities/Transaction";
 import { Report } from "../entities/Report";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "mysql",

@@ -1,4 +1,3 @@
-// src/entities/Report.ts
 import { Field, Int, ObjectType } from "type-graphql";
 import {
   Entity,

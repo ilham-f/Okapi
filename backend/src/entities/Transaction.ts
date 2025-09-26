@@ -1,4 +1,3 @@
-// src/entities/Transaction.ts
 import { Field, Int, ObjectType } from "type-graphql";
 import {
   Entity,

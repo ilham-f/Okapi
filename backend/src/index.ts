@@ -1,34 +1,43 @@
 import "reflect-metadata";
-import express from "express";
-import http from "http";
+import express, { Application } from "express";
 import { ApolloServer } from "apollo-server-express";
-import { AppDataSource } from "./config/data-source";
-import { createSchema } from "./graphql/schema";
-import { Server } from "socket.io";
+import { buildSchema } from "type-graphql";
+import { errorHandler } from "./middlewares/express/errorHandler";
+import { loggerMiddleware } from "./middlewares/express/logger";
+import { createContext } from "./context";
+import { UserResolver } from "./graphql/resolvers/UserResolver";
 import dotenv from "dotenv";
-import { stockSocket } from "./sockets/stock";
-import { stockWorker } from "./jobs/StockWorker";
 
 dotenv.config();
 
-(async () => {
-  await AppDataSource.initialize();
-
+async function bootstrap() {
   const app = express();
-  const httpServer = http.createServer(app);
+
+  // Express middleware global
+  app.use(loggerMiddleware);
+  app.use(express.json());
 
   // Apollo GraphQL
-  const schema = await createSchema();
-  const apolloServer = new ApolloServer({ schema });
-  await apolloServer.start();
-  apolloServer.applyMiddleware({ app, path: "/graphql" });
+  const schema = await buildSchema({
+    resolvers: [UserResolver],
+    globalMiddlewares: [], // bisa taruh LoggerMiddleware GraphQL global
+  });
 
-  // Socket.io
-  const io = new Server(httpServer, { cors: { origin: "*" } });
-  stockSocket(io);
+  const server = new ApolloServer({
+    schema,
+    context: createContext,
+  });
+
+  await server.start();
+  server.applyMiddleware({ app: app as Application, path: "/graphql" });
+
+  // Error handler terakhir
+  app.use(errorHandler);
 
   const PORT = process.env.PORT || 4000;
-  httpServer.listen(PORT, () => {
-    console.log(`🚀 Server ${process.env.APP_NAME} running at http://localhost:${PORT}/graphql`);
-  });
-})();
+
+  app.listen(PORT, () => console.log(`🚀 Server ${process.env.APP_NAME} running at http://localhost:${PORT}/graphql`));
+}
+
+bootstrap();
+
