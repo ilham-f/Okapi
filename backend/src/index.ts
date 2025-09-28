@@ -7,11 +7,15 @@ import { loggerMiddleware } from "./middlewares/express/logger";
 import { createContext } from "./context";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
 import dotenv from "dotenv";
+import { CategoryResolver } from "./graphql/resolvers/CategoryResolver";
+import { ProductResolver } from "./graphql/resolvers/ProductResolver";
+import { AppDataSource } from "./config/data-source";
 
 dotenv.config();
 
 async function bootstrap() {
   const app = express();
+  await AppDataSource.initialize();
 
   // Express middleware global
   app.use(loggerMiddleware);
@@ -19,7 +23,7 @@ async function bootstrap() {
 
   // Apollo GraphQL
   const schema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, CategoryResolver, ProductResolver],
     globalMiddlewares: [], // bisa taruh LoggerMiddleware GraphQL global
   });
 

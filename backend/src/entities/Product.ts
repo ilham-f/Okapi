@@ -1,5 +1,12 @@
-import { Field, Int, ObjectType } from "type-graphql";
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { 
+  Entity, 
+  PrimaryGeneratedColumn, 
+  Column, 
+  BaseEntity, 
+  ManyToOne 
+} from "typeorm";
+import { ObjectType, Field, Int, Float } from "type-graphql";
+import { Category } from "./Category";
 
 @ObjectType()
 @Entity()
@@ -12,11 +19,15 @@ export class Product extends BaseEntity {
   @Column()
   name!: string;
 
-  @Field(() => Int)
-  @Column("int", { default: 0 })
-  stock!: number;
+  @Field(() => Float)
+  @Column("decimal")
+  price!: number;
 
   @Field(() => Int)
-  @Column("int", { default: 0 })
-  price!: number;
+  @Column("int")
+  stock!: number;
+
+  @Field(() => Category)
+  @ManyToOne(() => Category, (category) => category.id, { nullable: true })
+  category!: Category;
 }

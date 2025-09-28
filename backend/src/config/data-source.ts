@@ -5,6 +5,7 @@ import { Product } from "../entities/Product";
 import { Transaction } from "../entities/Transaction";
 import { Report } from "../entities/Report";
 import dotenv from "dotenv";
+import { Category } from "../entities/Category";
 
 dotenv.config();
 
@@ -17,5 +18,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "okapi",
   synchronize: true, // dev only!
   logging: true,
-  entities: [User, Product, Transaction, Report],
+  entities: [User, Product, Transaction, Report, Category],
 });

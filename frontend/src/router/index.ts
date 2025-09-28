@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
 
-// Import views
 import Home from "../views/Home.vue"
 import Products from "../views/Products.vue"
 import Transactions from "../views/Transactions.vue"
