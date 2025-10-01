@@ -15,6 +15,7 @@ dotenv.config();
 
 async function bootstrap() {
   const app = express();
+  const corsOption = { origin: "http://localhost:5173" };
   await AppDataSource.initialize();
 
   // Express middleware global
@@ -40,8 +41,15 @@ async function bootstrap() {
 
   const PORT = process.env.PORT || 4000;
 
-  app.listen(PORT, () => console.log(`🚀 Server ${process.env.APP_NAME} running at http://localhost:${PORT}/graphql`));
+  app.listen({
+    port: PORT,
+    cors: {
+      origin: "http://localhost:5173",
+      credentials: true,
+    },
+  });
+
+  console.log(`🚀 Server ${process.env.APP_NAME} running at http://localhost:${PORT}/graphql`);
 }
 
 bootstrap();
-
